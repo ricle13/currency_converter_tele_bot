@@ -1,6 +1,6 @@
 import telebot
 from extensions import Converter, ConvertException
-from config import TELE_TOKEN, GREATINGS, HELP, VALUES, currencies
+from config import TELE_TOKEN, GREATINGS, HELP, VALUES
 
 bot = telebot.TeleBot(TELE_TOKEN)
 
@@ -28,17 +28,9 @@ def values(message: telebot.types.Message):
 @bot.message_handler()
 def convert(message: telebot.types.Message):
     try:
-        mes = message.text.split()
-        if len(mes) > 3 or len(mes) < 3:
-            raise ConvertException('Не совпадает количество параметров!')
-        base, quote, amount = list(mes)
-        if base.upper() not in currencies or quote.upper() not in currencies:
-            raise ConvertException('Неизвестные валюты!')
-        if base.upper() == quote.upper():
-            raise ConvertException('Вы ввели одинаковые валюты!')
-        if float(amount) <= 0:
-            raise ConvertException('Количество валюты < или = 0!')
-        answer = Converter.get_price(base = base, quote = quote, amount = amount)
+        meseg = message.text.split()
+        
+        answer = Converter.get_price(meseg = meseg)
     except ConvertException as e:
         bot.reply_to(message,f'Ошибка пользователя.\n {e}')
     except Exception as e:
